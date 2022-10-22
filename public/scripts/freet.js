@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 
+const { application } = require("express");
+
 /**
  * Fields is an object mapping the names of the form inputs to the values typed in
  * e.g. for createUser, fields has properites 'username' and 'password'
@@ -31,6 +33,13 @@ function editFreet(fields) {
 
 function deleteFreet(fields) {
   fetch(`/api/freets/${fields.id}`, {method: 'DELETE'})
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function toggleNewsposting(fields) {
+  console.log("went here");
+  fetch(`/api/freets/newspost/${fields.id}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)
     .catch(showResponse);
 }

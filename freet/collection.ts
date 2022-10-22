@@ -17,15 +17,17 @@ class FreetCollection {
    *
    * @param {string} authorId - The id of the author of the freet
    * @param {string} content - The id of the content of the freet
+   * @param {boolean} newspost- True if the Freet is a newspost, false if not 
    * @return {Promise<HydratedDocument<Freet>>} - The newly created freet
    */
-  static async addOne(authorId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
+  static async addOne(authorId: Types.ObjectId | string, content: string, newspost: boolean): Promise<HydratedDocument<Freet>> {
     const date = new Date();
     const freet = new FreetModel({
       authorId,
       dateCreated: date,
       content,
-      dateModified: date
+      dateModified: date,
+      newspost
     });
     await freet.save(); // Saves freet to MongoDB
     return freet.populate('authorId');
@@ -95,6 +97,19 @@ class FreetCollection {
    */
   static async deleteMany(authorId: Types.ObjectId | string): Promise<void> {
     await FreetModel.deleteMany({authorId});
+  }
+
+  /**
+   * Toggles Newsposting on a Freet, changing it from true to false and vice versa
+   * 
+   * @param {string} freetId - The id of the freet to be updated
+   * @return {Promise<HydratedDocument<Freet>>} - The newly updated freet
+   */
+  static async toggleNewsposting(freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
+    const freet = await FreetModel.findOne({_id: freetId});
+    freet.newsPost = !freet.newsPost;
+    await freet.save();
+    return freet.populate('authorId');
   }
 }
 

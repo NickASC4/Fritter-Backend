@@ -25,16 +25,20 @@ const isFreetExists = async (req: Request, res: Response, next: NextFunction) =>
  * spaces and not more than 140 characters
  */
 const isValidFreetContent = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.body.content) {
+    next();
+    return;
+  }
+  
   const {content} = req.body as {content: string};
   const freet = await FreetCollection.findOne(req.params.freetId);
-  let char_limit: number = 140; 
   if (!content.trim()) {
     res.status(400).json({
       error: 'Freet content must be at least one character long.'
     });
     return;
   }
-  if (freet !== null && freet.newsPost) {
+  if (freet !== null && freet.newspost) {
     if (content.length > 600) {
       res.status(413).json({
         error: 'Newspost must be no more than 600 characters.'

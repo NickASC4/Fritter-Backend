@@ -25,6 +25,13 @@ function createFreet(fields) {
     .catch(showResponse);
 }
 
+function createNewspost(fields) {
+  body = {...fields, newspost: true};
+  fetch('/api/freets', {method: 'POST', body: JSON.stringify(body), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}
+
 function editFreet(fields) {
   fetch(`/api/freets/${fields.id}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)
@@ -38,8 +45,8 @@ function deleteFreet(fields) {
 }
 
 function toggleNewsposting(fields) {
-  console.log("went here");
-  fetch(`/api/freets/newspost/${fields.id}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  body = {...fields, newspost: true};
+  fetch(`/api/freets/${fields.id}`, {method: 'PUT', body: JSON.stringify(body), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)
     .catch(showResponse);
 }

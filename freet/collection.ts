@@ -68,12 +68,18 @@ class FreetCollection {
    * Update a freet with the new content
    *
    * @param {string} freetId - The id of the freet to be updated
-   * @param {string} content - The new content of the freet
+   * @param {Object} freetDetails - An object with the freet's updated details
    * @return {Promise<HydratedDocument<Freet>>} - The newly updated freet
    */
-  static async updateOne(freetId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
+  static async updateOne(freetId: Types.ObjectId | string, freetDetails: any): Promise<HydratedDocument<Freet>> {
     const freet = await FreetModel.findOne({_id: freetId});
-    freet.content = content;
+    if (freetDetails.content) {
+      freet.content = freetDetails.content as string;
+    }
+
+    if(freetDetails.newspost) {
+      freet.newspost = !freet.newspost 
+    }
     freet.dateModified = new Date();
     await freet.save();
     return freet.populate('authorId');
@@ -99,18 +105,18 @@ class FreetCollection {
     await FreetModel.deleteMany({authorId});
   }
 
-  /**
-   * Toggles Newsposting on a Freet, changing it from true to false and vice versa
-   * 
-   * @param {string} freetId - The id of the freet to be updated
-   * @return {Promise<HydratedDocument<Freet>>} - The newly updated freet
-   */
-  static async toggleNewsposting(freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
-    const freet = await FreetModel.findOne({_id: freetId});
-    freet.newsPost = !freet.newsPost;
-    await freet.save();
-    return freet.populate('authorId');
-  }
+  // /**
+  //  * Toggles Newsposting on a Freet, changing it from true to false and vice versa
+  //  * 
+  //  * @param {string} freetId - The id of the freet to be updated
+  //  * @return {Promise<HydratedDocument<Freet>>} - The newly updated freet
+  //  */
+  // static async toggleNewsposting(freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
+  //   const freet = await FreetModel.findOne({_id: freetId});
+  //   freet.newspost = !freet.newspost;
+  //   await freet.save();
+  //   return freet.populate('authorId');
+  // }
 }
 
 export default FreetCollection;

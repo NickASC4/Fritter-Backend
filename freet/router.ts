@@ -66,8 +66,12 @@ router.post(
     freetValidator.isValidFreetContent
   ],
   async (req: Request, res: Response) => {
+    let newspost = false;
+    if (req.body.newspost) {
+      newspost = true;
+    }
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const freet = await FreetCollection.addOne(userId, req.body.content, false);
+    const freet = await FreetCollection.addOne(userId, req.body.content, newspost);
 
     res.status(201).json({
       message: 'Your freet was created successfully.',
@@ -123,7 +127,7 @@ router.put(
     freetValidator.isValidFreetContent
   ],
   async (req: Request, res: Response) => {
-    const freet = await FreetCollection.updateOne(req.params.freetId, req.body.content);
+    const freet = await FreetCollection.updateOne(req.params.freetId, req.body);
     res.status(200).json({
       message: 'Your freet was updated successfully.',
       freet: util.constructFreetResponse(freet)
@@ -131,32 +135,32 @@ router.put(
   }
 );
 
-/**
- * Toggle newsposting on a freet 
- * 
- * @name PUT /api/freets/newspost/:id
- * 
- * @return {FreetResponse} - the updated freet
- * @throws {403} - if the user is not logged in or not the author of
- *                 of the freet
- * @throws {404} - If the freetId is not valid
- */
- router.put(
-  '/:freetId?',
-  [
-    userValidator.isUserLoggedIn,
-    freetValidator.isFreetExists,
-    freetValidator.isValidFreetModifier
-  ],
+// /**
+//  * Toggle newsposting on a freet 
+//  * 
+//  * @name PUT /api/freets/:id/newspost
+//  * 
+//  * @return {FreetResponse} - the updated freet
+//  * @throws {403} - if the user is not logged in or not the author of
+//  *                 of the freet
+//  * @throws {404} - If the freetId is not valid
+//  */
+//  router.put(
+//   '/:freetId?',
+//   [
+//     userValidator.isUserLoggedIn,
+//     freetValidator.isFreetExists,
+//     freetValidator.isValidFreetModifier
+//   ],
   
-  async (req: Request, res: Response) => {
-    const freet = await FreetCollection.toggleNewsposting(req.params.freetId);
-    res.status(200).json({
-      message: 'Your newspost was toggled succesfully',
-      freet: util.constructFreetResponse(freet)
-    });
-  }
-);
+//   async (req: Request, res: Response) => {
+//     const freet = await FreetCollection.toggleNewsposting(req.params.freetId);
+//     res.status(200).json({
+//       message: 'Your newspost was toggled succesfully',
+//       freet: util.constructFreetResponse(freet)
+//     });
+//   }
+// );
 
 
 export {router as freetRouter};

@@ -28,6 +28,13 @@ function showResponse(response) {
 
 // Map form (by id) to the function that should be called on submit
 const formsAndHandlers = {
+  'view-all-freets': viewAllFreets,
+  'view-freets-by-author': viewFreetsByAuthor,
+  'create-freet': createFreet,
+  'create-newspost': createNewspost,
+  'edit-freet': editFreet,
+  'delete-freet': deleteFreet,
+  'toggle-newsposting': toggleNewsposting,
   'create-user': createUser,
   'delete-user': deleteUser,
   'change-username': changeUsername,
@@ -36,19 +43,17 @@ const formsAndHandlers = {
   'sign-out': signOut,
   'increment-following-content': changeFollowingContent,
   'increment-recommended-content': changeRecommendedContent,
-  'view-all-freets': viewAllFreets,
-  'view-freets-by-author': viewFreetsByAuthor,
-  'create-freet': createFreet,
-  'create-newspost': createNewspost,
-  'edit-freet': editFreet,
-  'delete-freet': deleteFreet,
-  'toggle-newsposting': toggleNewsposting
+  'delete-community': deleteCommunity,
+  'create-community': createCommunity
 };
 
 // Attach handlers to forms
 function init() {
   Object.entries(formsAndHandlers).forEach(([formID, handler]) => {
+    console.log(formID);
+    console.log(handler);
     const form = document.getElementById(formID);
+    console.log(form);
     form.onsubmit = e => {
       e.preventDefault();
       const formData = new FormData(form);

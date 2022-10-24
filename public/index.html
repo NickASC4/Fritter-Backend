@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/stylesheets/style.css">
   <script src="/scripts/freet.js"></script>
   <script src="/scripts/user.js"></script>
+  <script src="/scripts/community.js"></script>
   <script src="/scripts/index.js"></script>
 </head>
 
@@ -74,9 +75,9 @@
         </form>
 
         <form id="view-all-freets">
-            <h3>View All Freets</h3>
-            <input type="submit" value="View All Freets">
-          </form>
+          <h3>View All Freets</h3>
+          <input type="submit" value="View All Freets">
+        </form>
 
         <form id="view-freets-by-author">
           <h3>View Freets By Author</h3>
@@ -145,6 +146,25 @@
           <h3>Increment Recommended Content</h3>
           <input type="submit" value="Increment Recommended Content">
         </form>
+
+        <form id="create-community">
+          <h3>Create Community</h3>
+          <div>
+            <label for="name">Community Name:</label>
+            <input id="name" name="name">
+          </div>
+          <input type="submit" value="Create Community">
+        </form>
+
+        <form id="delete-community">
+          <h3>Delete Community</h3>
+          <div>
+            <label for="id">ID:</label>
+            <input id="id" name="id">
+          </div>
+          <input type="submit" value="Delete Community">
+        </form>
+
 
 
 

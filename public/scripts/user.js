@@ -35,6 +35,20 @@ function changeRecommendedContent(fields) {
     .catch(showResponse);
 }
 
+function joinCommunity(fields) {
+  body = {...fields, join: true};
+  fetch(`/api/users/communities/${fields.id}`, {method: 'PUT', body: JSON.stringify(body), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function leaveCommunity(fields) {
+  body = {...fields, join: false};
+  fetch(`/api/users/communities/${fields.id}`, {method: 'PUT', body: JSON.stringify(body), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}
+
 function deleteUser(fields) {
   fetch('/api/users', {method: 'DELETE'})
     .then(showResponse)

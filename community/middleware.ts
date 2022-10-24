@@ -26,12 +26,13 @@ const isCommunityNameNotTaken = async (req: Request, res: Response, next: NextFu
 };
 
 const isCommunityExists = async (req: Request, res: Response, next: NextFunction) => {
+
     const validFormat = Types.ObjectId.isValid(req.params.communityId);
     const community = validFormat ? await CommunityCollection.findOneByCommunityId(req.params.communityId): '';
     if (!community) {
         res.status(404).json({
             error: {
-                communityNotFound: `Freet with freet ID ${req.params.communityId} does not exist.`
+                communityNotFound: `Community with community ID ${req.params.communityId} does not exist.`
             }
         });
         return;
@@ -40,7 +41,7 @@ const isCommunityExists = async (req: Request, res: Response, next: NextFunction
     next();
 };
 
-const isCurrentUserCommunityOwner = async(req: Request, res: Response, next: NextFunction) => {
+const isCurrentUserCommunityOwner = async (req: Request, res: Response, next: NextFunction) => {
     if (req.session.userId) {
         const user = await UserCollection.findOneByUserId(req.session.userId);
         const community = await CommunityCollection.findOneByCommunityId(req.params.communityId);
@@ -54,8 +55,33 @@ const isCurrentUserCommunityOwner = async(req: Request, res: Response, next: Nex
     next();
 }
 
+const isCurrentUserCommunityMember = async (req: Request, res: Response, next: NextFunction) => {
+    if (req.session.userId) {
+        const user = await UserCollection.findOneByUserId(req.session.userId);
+        const community = await CommunityCollection.findOneByCommunityId(req.body.id);
+        const set = new Set(user.communities);
+        if (set.has(community.id)) {
+            if (req.body.join) {
+                res.status(409).json({
+                    error: 'You are already in this community'
+                });
+                return;
+            }
+        } else {
+            if (!req.body.join) {
+                res.status(409).json({
+                    error: 'You are not a member of this community'
+                });
+                return;
+            }
+        }
+    }
+    next();
+}
+
 export {
     isCommunityNameNotTaken,
     isCommunityExists,
-    isCurrentUserCommunityOwner 
+    isCurrentUserCommunityOwner,
+    isCurrentUserCommunityMember 
 };

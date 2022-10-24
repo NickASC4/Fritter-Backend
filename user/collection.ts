@@ -86,6 +86,14 @@ class UserCollection {
       user.followingContent -= 1;
       user.recommendedContent += 1; 
     }
+    if (userDetails.id) {
+      if (userDetails.join) {
+        user.communities.push(userDetails.id)
+      } else {
+        const index = user.communities.indexOf(userDetails.id);
+        user.communities.splice(index, 1);
+      }
+    }
 
     await user.save();
     return user;

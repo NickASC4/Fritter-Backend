@@ -1,6 +1,7 @@
 import type {HydratedDocument} from 'mongoose';
 import moment from 'moment';
 import type {User} from './model';
+import type {Community} from '../community/model'
 
 // Update this if you add a property to the User type!
 type UserResponse = {
@@ -9,6 +10,7 @@ type UserResponse = {
   dateJoined: string;
   followingContent: number;
   recommendedContent: number;
+  communities: [string];
 };
 
 /**
@@ -39,7 +41,8 @@ const constructUserResponse = (user: HydratedDocument<User>): UserResponse => {
     _id: userCopy._id.toString(),
     dateJoined: formatDate(user.dateJoined),
     followingContent: userCopy.followingContent,
-    recommendedContent: userCopy.recommendedContent
+    recommendedContent: userCopy.recommendedContent,
+    communities: userCopy.communities
   };
 };
 

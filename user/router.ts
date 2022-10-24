@@ -3,6 +3,7 @@ import express from 'express';
 import FreetCollection from '../freet/collection';
 import UserCollection from './collection';
 import * as userValidator from '../user/middleware';
+import * as communityValidator from '../community/middleware';
 import * as util from './util';
 
 const router = express.Router();
@@ -147,6 +148,34 @@ router.delete(
     req.session.userId = undefined;
     res.status(200).json({
       message: 'Your account has been deleted successfully.'
+    });
+  }
+);
+
+/**
+ * Update a user's communities
+ * 
+ * @name PUT /api/communities/:id
+ * 
+ * @return {string} - A success message
+ * @throws {403} - If the user is not logged in
+ * @throws {404} - If the communityId is not valid
+ * @throws {403} - If the user is not part of the community they are trying to leave
+ * @throws {403} - If the user is part of the community they are trying to join
+ */
+router.put(
+  '/communities/:communityId?',
+  [
+    userValidator.isUserLoggedIn,
+    communityValidator.isCommunityExists,
+    communityValidator.isCurrentUserCommunityMember
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const user = await UserCollection.updateOne(userId, req.body);
+    res.status(200).json({
+      message: 'Your profile was updated successfully.',
+      user: util.constructUserResponse(user)
     });
   }
 );

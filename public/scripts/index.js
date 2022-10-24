@@ -43,6 +43,8 @@ const formsAndHandlers = {
   'sign-out': signOut,
   'increment-following-content': changeFollowingContent,
   'increment-recommended-content': changeRecommendedContent,
+  'join-community': joinCommunity,
+  'leave-community': leaveCommunity,
   'delete-community': deleteCommunity,
   'create-community': createCommunity
 };

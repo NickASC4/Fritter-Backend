@@ -77,6 +77,16 @@ class UserCollection {
       user.username = userDetails.username as string;
     }
 
+    if (userDetails.followingContent) {
+      user.followingContent += 1;
+      user.recommendedContent -= 1;
+    }
+
+    if (userDetails.recommendedContent) {
+      user.followingContent -= 1;
+      user.recommendedContent += 1; 
+    }
+
     await user.save();
     return user;
   }

@@ -1,6 +1,7 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
 import UserCollection from '../user/collection';
+import { userRouter } from './router';
 
 /**
  * Checks if the current session user (if any) still exists in the database, for instance,
@@ -85,6 +86,12 @@ const isAccountExists = async (req: Request, res: Response, next: NextFunction) 
  * Checks if a username in req.body is already in use
  */
 const isUsernameNotAlreadyInUse = async (req: Request, res: Response, next: NextFunction) => {
+
+  if (!req.body.username) {
+    next();
+    return;
+  }
+
   const user = await UserCollection.findOneByUsername(req.body.username);
 
   // If the current session user wants to change their username to one which matches
@@ -100,6 +107,34 @@ const isUsernameNotAlreadyInUse = async (req: Request, res: Response, next: Next
     }
   });
 };
+
+const isContentChangeValid = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await UserCollection.findOneByUserId(req.session.userId);
+
+  if (req.body.recommendedContent) {
+    if (user.recommendedContent >= 10) {
+      res.status(409).json({
+        error: {
+          recommendedContent: 'Recommended content is at its maximum value'
+        }
+      });
+      return;
+    }
+  }
+
+  if (req.body.followingContent) {
+    if (user.followingContent >= 10) {
+      res.status(409).json({
+        error: {
+          followingContent: 'Recommended content is at its maximum value'
+        }
+      });
+      return;
+    }
+  }
+
+  next();
+}
 
 /**
  * Checks if the user is logged in, that is, whether the userId is set in session
@@ -161,5 +196,6 @@ export {
   isAccountExists,
   isAuthorExists,
   isValidUsername,
-  isValidPassword
+  isValidPassword,
+  isContentChangeValid
 };

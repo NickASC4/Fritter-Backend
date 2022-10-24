@@ -34,6 +34,8 @@ const formsAndHandlers = {
   'change-password': changePassword,
   'sign-in': signIn,
   'sign-out': signOut,
+  'increment-following-content': changeFollowingContent,
+  'increment-recommended-content': changeRecommendedContent,
   'view-all-freets': viewAllFreets,
   'view-freets-by-author': viewFreetsByAuthor,
   'create-freet': createFreet,

@@ -7,6 +7,8 @@ type UserResponse = {
   _id: string;
   username: string;
   dateJoined: string;
+  followingContent: number;
+  recommendedContent: number;
 };
 
 /**
@@ -35,7 +37,9 @@ const constructUserResponse = (user: HydratedDocument<User>): UserResponse => {
   return {
     ...userCopy,
     _id: userCopy._id.toString(),
-    dateJoined: formatDate(user.dateJoined)
+    dateJoined: formatDate(user.dateJoined),
+    followingContent: userCopy.followingContent,
+    recommendedContent: userCopy.recommendedContent
   };
 };
 

@@ -101,6 +101,8 @@ router.post(
  *
  * @param {string} username - The user's new username
  * @param {string} password - The user's new password
+ * @param {boolean} recommendedContent - Whether to increment recommended content or not
+ * @param {boolean} followingContent - Whether to increment following content or not
  * @return {UserResponse} - The updated user
  * @throws {403} - If user is not logged in
  * @throws {409} - If username already taken
@@ -112,7 +114,8 @@ router.put(
     userValidator.isUserLoggedIn,
     userValidator.isValidUsername,
     userValidator.isUsernameNotAlreadyInUse,
-    userValidator.isValidPassword
+    userValidator.isValidPassword,
+    userValidator.isContentChangeValid
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn

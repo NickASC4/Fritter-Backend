@@ -21,6 +21,20 @@ function changePassword(fields) {
     .catch(showResponse);
 }
 
+function changeFollowingContent(fields) {
+  body = {...fields, followingContent: true};
+  fetch('/api/users', {method: 'PUT', body: JSON.stringify(body), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function changeRecommendedContent(fields) {
+  body = {...fields, recommendedContent: true};
+  fetch('/api/users', {method: 'PUT', body: JSON.stringify(body), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}
+
 function deleteUser(fields) {
   fetch('/api/users', {method: 'DELETE'})
     .then(showResponse)

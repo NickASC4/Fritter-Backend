@@ -2,6 +2,7 @@ import type {HydratedDocument, Types} from 'mongoose';
 import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
+import CommunityCollection from '../community/collection';
 
 /**
  * This files contains a class that has the functionality to explore freets
@@ -17,20 +18,22 @@ class FreetCollection {
    *
    * @param {string} authorId - The id of the author of the freet
    * @param {string} content - The id of the content of the freet
-   * @param {boolean} newspost- True if the Freet is a newspost, false if not 
+   * @param {boolean} newspost - True if the Freet is a newspost, false if not 
+   * @param {string} community - The community the freet is posted in
    * @return {Promise<HydratedDocument<Freet>>} - The newly created freet
    */
-  static async addOne(authorId: Types.ObjectId | string, content: string, newspost: boolean): Promise<HydratedDocument<Freet>> {
+  static async addOne(authorId: Types.ObjectId | string, content: string, newspost: boolean, community: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
     const date = new Date();
     const freet = new FreetModel({
       authorId,
       dateCreated: date,
       content,
       dateModified: date,
-      newspost
+      newspost,
+      community
     });
     await freet.save(); // Saves freet to MongoDB
-    return freet.populate('authorId');
+    return (await freet.populate('authorId')).populate('community');
   }
 
   /**
@@ -62,6 +65,11 @@ class FreetCollection {
   static async findAllByUsername(username: string): Promise<Array<HydratedDocument<Freet>>> {
     const author = await UserCollection.findOneByUsername(username);
     return FreetModel.find({authorId: author._id}).populate('authorId');
+  }
+
+  static async findAllByCommunity(name: string): Promise<Array<HydratedDocument<Freet>>> {
+    const community = await CommunityCollection.findOneByName(name);
+    return FreetModel.find({community: community._id.toString()}).populate('authorId');
   }
 
   /**

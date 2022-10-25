@@ -27,15 +27,32 @@ const isCommunityNameNotTaken = async (req: Request, res: Response, next: NextFu
 
 const isCommunityExists = async (req: Request, res: Response, next: NextFunction) => {
 
-    const validFormat = Types.ObjectId.isValid(req.params.communityId);
-    const community = validFormat ? await CommunityCollection.findOneByCommunityId(req.params.communityId): '';
-    if (!community) {
-        res.status(404).json({
-            error: {
-                communityNotFound: `Community with community ID ${req.params.communityId} does not exist.`
-            }
-        });
-        return;
+    if (req.params.community) {
+        const community = await CommunityCollection.findOneByName(req.params.community);
+
+        if (!community) {
+            res.status(404).json({
+                error: {
+                    communityNotFound: `Community with community name ${req.params.community} does not exist.`
+                }
+            });
+            return;
+        }
+    }
+
+    if (req.params.communityId) {
+        const validFormat = Types.ObjectId.isValid(req.params.communityId);
+        const community = validFormat ? await CommunityCollection.findOneByCommunityId(req.params.communityId): '';
+
+        if (!community) {
+            res.status(404).json({
+                error: {
+                    communityNotFound: `Community with community ID ${req.params.communityId} does not exist.`
+                }
+            });
+            return;
+        }
+
     }
 
     next();
@@ -58,7 +75,27 @@ const isCurrentUserCommunityOwner = async (req: Request, res: Response, next: Ne
 const isCurrentUserCommunityMember = async (req: Request, res: Response, next: NextFunction) => {
     if (req.session.userId) {
         const user = await UserCollection.findOneByUserId(req.session.userId);
+        const community = await CommunityCollection.findOneByCommunityId(req.params.communityId);
+        if (!community) {
+            next();
+            return;
+        }
+        const communitySet = new Set(user.communities);
+        if (!communitySet.has(community.id.toString())) {
+            res.status(403).json({
+                error: 'You are not a member of this community.'
+            });
+            return;
+        }
+    }
+    next();
+}
+
+const canUserJoinCommunity= async (req: Request, res: Response, next: NextFunction) => {
+    if (req.session.userId) {
+        const user = await UserCollection.findOneByUserId(req.session.userId);
         const community = await CommunityCollection.findOneByCommunityId(req.body.id);
+
         const set = new Set(user.communities);
         if (set.has(community.id)) {
             if (req.body.join) {
@@ -83,5 +120,6 @@ export {
     isCommunityNameNotTaken,
     isCommunityExists,
     isCurrentUserCommunityOwner,
-    isCurrentUserCommunityMember 
+    canUserJoinCommunity,
+    isCurrentUserCommunityMember
 };

@@ -55,9 +55,9 @@ router.get(
  *
  * @name GET /api/freets/:id
  *
- * @return {FreetResponse[]} - An array of freets created by user with id, authorId
- * @throws {400} - If authorId is not given
- * @throws {404} - If no user has given authorId
+ * @return {FreetResponse[]} - An array of freets in the community user with id, authorId
+ * @throws {400} - If community is not given
+ * @throws {404} - If the community does not exist
  *
  */
  router.get(
@@ -80,11 +80,10 @@ router.get(
  *
  * @param {string} content - The content of the freet
  * @param {boolean} newspost - Whether or not the post is a newspost
- * @param {string} community - The community the post is being made in
  * @return {FreetResponse} - The created freet
  * @throws {403} - If the user is not logged in
  * @throws {400} - If the freet content is empty or a stream of empty spaces
- * @throws {413} - If the freet content is more than 140 characters long
+ * @throws {413} - If the freet content is more than 140 characters long or 600 for a newspost
  */
 router.post(
   '/',
@@ -118,7 +117,7 @@ router.post(
  * @return {FreetResponse} - The created freet
  * @throws {403} - If the user is not logged in
  * @throws {400} - If the freet content is empty or a stream of empty spaces
- * @throws {413} - If the freet content is more than 140 characters long
+ * @throws {413} - If the freet content is more than 140 characters long or 600 for a newspost
  * @throws {404} - If the community is not valid 
  * @throws {403} - If the user is not a member of the community 
  */

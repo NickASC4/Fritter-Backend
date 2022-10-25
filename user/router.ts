@@ -155,7 +155,7 @@ router.delete(
 /**
  * Update a user's communities
  * 
- * @name PUT /api/communities/:id
+ * @name PUT /api/users/communities/:id
  * 
  * @return {string} - A success message
  * @throws {403} - If the user is not logged in

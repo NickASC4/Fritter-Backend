@@ -192,11 +192,22 @@ This renders the `index.html` file that will be used to interact with the backen
 - `400` if `author` is not given
 - `404` if `author` is not a recognized username of any user
 
+#### `GET /api/freets/:community?` - Get freets in a community
+
+**Returns**
+
+- An array of freets in the community
+
+**Throws**
+- `400` if `community` is not given
+- `404` if `community` does not exist
+
 #### `POST /api/freets` - Create a new freet
 
 **Body**
 
 - `content` _{string}_ - The content of the freet
+- `newspost` _{boolean}_ - Whether or not the post is a newspost
 
 **Returns**
 
@@ -208,6 +219,28 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in
 - `400` If the freet content is empty or a stream of empty spaces
 - `413` If the freet content is more than 140 characters long
+
+#### `POST /api/freets/communityId?` - Create a new freet in a community
+
+**Body**
+
+- `content` _{string}_ - The content of the freet
+- `newspost` _{boolean}_ - Whether or not the post is a newspost
+- `community` _{string}_ - The community the post is being made in
+
+**Returns**
+
+- A success message
+- A object with the created freet
+
+**Throws**
+
+- `403` if the user is not logged in
+- `400` If the freet content is empty or a stream of empty spaces
+- `413` If the freet content is more than 140 characters long or 600 characters for a newspost
+- `404` If the community is not valid
+- `403` If the user is not a member of the community
+
 
 #### `DELETE /api/freets/:freetId?` - Delete an existing freet
 
@@ -292,6 +325,8 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `username` _{string}_ - The user's username
 - `password` _{string}_ - The user's password
+- `recommendedContent` _{boolean}_ - Whether to increment recommended content or not
+- `followingContent` _{boolean}_ - Whether to increment following content or not
 
 **Returns**
 
@@ -313,3 +348,68 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
+
+#### `PUT /api/users/communities/:communityId?` - Update a user's communities
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the community id is not valid
+- `403` if the user is not part of a community they're trying to leave
+- `403` if the user is already party of a community they're trying to join
+
+#### `POST /api/communities` - Create a community
+
+**Body**
+
+- `name` _{string}_ - The name of the community
+
+**Returns**
+
+- A success message 
+- An object with the community's details
+
+**Throws**
+
+- `409` If the community name is already taken
+
+#### `DELETE /api/communities/:communityId?` - Delete a community 
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not the owner of the community
+- `404` if the community id is not valid
+
+#### `POST /api/follows?followedUser=USER` - Create a new follow
+
+**Returns**
+
+- A success message 
+- An object with the follow's details
+
+**Throws**
+
+- `403` If the user is not logged in
+
+#### `DELETE /api/follows?followedUser=USER` - Delete a community 
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not the owner of the community
+- `404` if the community id is not valid
+
+

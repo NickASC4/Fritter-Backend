@@ -16,7 +16,6 @@ const router = express.Router();
  * @param {string} name - the name of the community
  * @return {CommunityResponse} - The created community
  * @throws {409} - If the community name is already taken
- * @throws {400} - If the community name is not in the correct format
  *
  */
  router.post(
